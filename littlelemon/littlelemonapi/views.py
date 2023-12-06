@@ -33,17 +33,28 @@ def category_details(_request, pk):
     return Response(serialized_category.data)
 
 
-@api_view()
+@api_view(['GET', 'POST'])
 def menu_items(request):
-    # menu_items = MenuItem.objects.all()
-    items = MenuItem.objects.select_related('category').all()
-    serialized_items = MenuItemSerializer(
-        items,
-        many=True,
-        context={'request': request}
-    )
+    if request.method == 'GET':
+        items = MenuItem.objects.select_related('category').all()
+        serialized_items = MenuItemSerializer(
+            items,
+            many=True,
+            context={'request': request}
+        )
 
-    return Response(serialized_items.data)
+        return Response(serialized_items.data)
+
+    # Create new menu item record using deserialized data
+    elif request.method == 'POST':
+        new_item = MenuItemSerializer(data=request.data)
+
+        if new_item.is_valid():
+            new_item.save()
+
+            return Response(new_item.data, status=201)
+
+        return Response(new_item.errors, status=400)
 
 
 @api_view()
