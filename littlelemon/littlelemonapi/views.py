@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from django.shortcuts import get_object_or_404
+from django.core.paginator import Paginator, EmptyPage
 
 from .models import Category, MenuItem
 from .serializers import CategorySerializer, MenuItemSerializer
@@ -41,6 +42,8 @@ def menu_items(request):
         max_price = request.query_params.get('max_price', None)
         search_keyword = request.query_params.get('search', None)
         ordering = request.query_params.get('order_by', None)
+        page = request.query_params.get('page', default=1)
+        perpage = request.query_params.get('perpage', default=2)
 
         if category_name is not None:
             items = items.filter(category__slug=category_name)
@@ -54,6 +57,13 @@ def menu_items(request):
         if ordering is not None:
             ordering_fields = ordering.split(',')
             items = items.order_by(*ordering_fields)
+
+        # Pagination
+        paginator = Paginator(items, perpage)
+        try:
+            items = paginator.page(number=page)
+        except EmptyPage:
+            items = []
 
         serialized_items = MenuItemSerializer(
             items,
