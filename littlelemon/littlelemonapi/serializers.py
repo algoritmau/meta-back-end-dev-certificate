@@ -20,6 +20,19 @@ class MenuItemSerializer(serializers.ModelSerializer):
         method_name='get_taxed_price'
     )
 
+    def validate(self, attrs):
+        if attrs['price'] < Decimal(2.0):
+            raise serializers.ValidationError(
+                'Minimum price must be at least $2.00.'
+            )
+
+        if attrs['inventory'] < 0:
+            raise serializers.ValidationError(
+                'Stock must be at least 0.'
+            )
+
+        return super().validate(attrs)
+
     class Meta:
         model = MenuItem
         fields = ['id', 'name', 'description', 'category', 'price', 'stock',
