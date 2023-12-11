@@ -37,6 +37,24 @@ def category_details(_request, pk):
 def menu_items(request):
     if request.method == 'GET':
         items = MenuItem.objects.select_related('category').all()
+        category_name = request.query_params.get('category', None)
+        max_price = request.query_params.get('max_price', None)
+        search_keyword = request.query_params.get('search', None)
+        ordering = request.query_params.get('order_by', None)
+
+        if category_name is not None:
+            items = items.filter(category__slug=category_name)
+
+        if max_price is not None:
+            items = items.filter(price__lte=max_price)
+
+        if search_keyword is not None:
+            items = items.filter(name__icontains=search_keyword)
+
+        if ordering is not None:
+            ordering_fields = ordering.split(',')
+            items = items.order_by(*ordering_fields)
+
         serialized_items = MenuItemSerializer(
             items,
             many=True,
