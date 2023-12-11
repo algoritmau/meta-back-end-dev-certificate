@@ -20,7 +20,7 @@ from .serializers import CategorySerializer, MenuItemSerializer
 @api_view()
 def menu_categories(_request):
     categories = Category.objects.all()
-    serialized_categories = MenuItemSerializer(categories, many=True)
+    serialized_categories = CategorySerializer(categories, many=True)
 
     return Response(serialized_categories.data)
 
