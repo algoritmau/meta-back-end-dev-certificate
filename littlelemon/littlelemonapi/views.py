@@ -67,12 +67,12 @@ def menu_items(request):
     elif request.method == 'POST':
         new_item = MenuItemSerializer(data=request.data)
 
-        if new_item.is_valid():
-            new_item.save()
+        if not new_item.is_valid():
+            return Response(new_item.errors, status=400)
 
-            return Response(new_item.data, status=201)
+        new_item.save()
 
-        return Response(new_item.errors, status=400)
+        return Response(new_item.data, status=201)
 
 
 @api_view()
