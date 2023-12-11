@@ -7,6 +7,8 @@ from rest_framework.validators import UniqueValidator
 from .models import Category
 from .models import MenuItem
 
+import bleach
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,6 +30,10 @@ class MenuItemSerializer(serializers.ModelSerializer):
     )
 
     def validate(self, attrs):
+        # Sanitize input
+        attrs['name'] = bleach.clean(attrs['name'])
+        attrs['description'] = bleach.clean(attrs['description'])
+
         if attrs['price'] < Decimal(2.0):
             raise serializers.ValidationError(
                 'Minimum price must be at least $2.00.'
