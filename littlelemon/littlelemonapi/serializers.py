@@ -2,6 +2,8 @@ from rest_framework import serializers
 
 from decimal import Decimal
 
+from rest_framework.validators import UniqueValidator
+
 from .models import Category
 from .models import MenuItem
 
@@ -10,6 +12,11 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['id', 'name', 'slug']
+        extra_kwargs = {
+            'name': {
+                'validators': [UniqueValidator(queryset=Category.objects.all())]
+            }
+        }
 
 
 class MenuItemSerializer(serializers.ModelSerializer):
@@ -37,6 +44,11 @@ class MenuItemSerializer(serializers.ModelSerializer):
         model = MenuItem
         fields = ['id', 'name', 'description', 'category', 'price', 'stock',
                   'taxed_price', 'category_id']
+        extra_kwargs = {
+            'name': {
+                'validators': [UniqueValidator(queryset=MenuItem.objects.all())]
+            }
+        }
 
     # Computed field
     @staticmethod
