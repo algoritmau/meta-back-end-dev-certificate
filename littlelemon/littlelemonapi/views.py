@@ -8,6 +8,9 @@ from django.core.paginator import Paginator, EmptyPage
 from .models import Category, MenuItem
 from .serializers import CategorySerializer, MenuItemSerializer
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import permission_classes
+
 
 # class MenuItemsView(generics.ListCreateAPIView):
 #     queryset = MenuItem.objects.all()
@@ -92,3 +95,10 @@ def single_menu_item(_request, menu_item_id):
     serialized_menu_item = MenuItemSerializer(menu_item)
 
     return Response(serialized_menu_item.data)
+
+
+# Protected view
+@api_view()
+@permission_classes([IsAuthenticated])
+def secret_page(_request):
+    return Response({'message': 'You have reached the secret page.'})

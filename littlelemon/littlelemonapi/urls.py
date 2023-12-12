@@ -8,4 +8,5 @@ urlpatterns = [
     path('categories/<int:pk>', views.category_details, name='category-detail'),
     path('menu-items', views.menu_items),
     path('menu-items/<int:menu_item_id>', views.single_menu_item),
+    path('secret/', views.secret_page),
 ]
