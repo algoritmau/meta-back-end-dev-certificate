@@ -102,3 +102,13 @@ def single_menu_item(_request, menu_item_id):
 @permission_classes([IsAuthenticated])
 def secret_page(_request):
     return Response({'message': 'You have reached the secret page.'})
+
+
+# Manager-only view
+@api_view()
+@permission_classes([IsAuthenticated])
+def manager_only(_request):
+    if _request.user.groups.filter(name='Management').exists():
+        return Response({'message': 'You are a manager.'})
+    else:
+        return Response({'message': 'You are not a manager.'}, 403)
