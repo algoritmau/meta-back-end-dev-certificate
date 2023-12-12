@@ -1,9 +1,10 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, throttle_classes
 # from rest_framework import generics
 from rest_framework.response import Response
 
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator, EmptyPage
+from rest_framework.throttling import AnonRateThrottle, UserRateThrottle
 
 from .models import Category, MenuItem
 from .serializers import CategorySerializer, MenuItemSerializer
@@ -112,3 +113,15 @@ def manager_only(_request):
         return Response({'message': 'You are a manager.'})
     else:
         return Response({'message': 'You are not a manager.'}, 403)
+
+
+@api_view()
+@throttle_classes([AnonRateThrottle])
+def anon_throttle_check(_request):
+    return Response({'message': 'You are not being throttled.'})
+
+
+@api_view()
+@throttle_classes([UserRateThrottle])
+def user_throttle_check(_request):
+    return Response({'message': 'You are not being throttled.'})

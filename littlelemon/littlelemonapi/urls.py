@@ -13,4 +13,6 @@ urlpatterns = [
     path('api-token-auth/', obtain_auth_token),
     path('secret/', views.secret_page),
     path('manager-only/', views.manager_only),
+    path('anon-throttle-check/', views.anon_throttle_check),
+    path('user-throttle-check/', views.user_throttle_check),
 ]
