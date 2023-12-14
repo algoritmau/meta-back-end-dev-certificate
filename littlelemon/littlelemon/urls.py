@@ -16,8 +16,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('littlelemonapi.urls'))
+    path('api/', include('littlelemonapi.urls')),
+    path('auth/', include('djoser.urls')),
+    path('auth/', include('djoser.urls.authtoken')),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
+
+# djoser's endpoints
+# /users/ - create user
+# /users/me/ - get current user
+# /users/confirm/ - confirm user
+# /users/resend_activation/ - resend activation email
+# /users/set_password/ - set password
+# /users/reset_password/ - reset password
+# /users/reset_password_confirm/ - confirm reset password
+# /users/set_username/ - set username
+# /users/reset_username/ - reset username
+# /users/reset_username_confirm/ - confirm reset username
+# /token/login/ - login
+# /token/logout/ - logout
